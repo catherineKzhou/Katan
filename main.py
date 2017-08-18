@@ -28,7 +28,6 @@ class Katan(ConnectionListener):
 		pygame.init();
 		self.width, self.height, self.radius = 1000, 750, 60
 		self.screen = pygame.display.set_mode((self.width, self.height))
-		self.screen.fill(GRAY)
 		wood = pygame.image.load('wood_final.png').convert_alpha()
 		brick = pygame.image.load('brick_final.png').convert_alpha()
 		sheep = pygame.image.load('sheep_final.png').convert_alpha()
@@ -43,14 +42,6 @@ class Katan(ConnectionListener):
 		self.images = {Resources.WOOD:wood, Resources.BRICK:brick, Resources.SHEEP:sheep,
 					   Resources.WHEAT:wheat, Resources.STONE:stone, Resources.DESERT:desert}
 		self.catan = game(4, self.radius, [self.width/2-30, self.height/2], ["raw_input()", "raw_input()", "raw_input()", "raw_input()"])
-		self.screen.blit(self.board, [69, 22])
-		for i in range(19):
-			self.screen.blit(self.images[self.catan.board[i].resource], [self.catan.pixelLoc[i+1][0]-self.radius, self.catan.pixelLoc[i+1][1]-self.radius*2/math.sqrt(3)])
-			self.screen.blit(self.tiles[self.catan.board[i].number], [self.catan.pixelLoc[i+1][0]-14, self.catan.pixelLoc[i+1][1]-14])
-		for i in range(19):
-			pygame.draw.polygon(self.screen, BROWN, coord_hexagon(self.radius, self.catan.pixelLoc[i+1]), 4)
-
-
 
 		self.hello = pygame.display.get_surface()
 		self.new = pygame.Surface((1000, 750))
@@ -85,13 +76,22 @@ class Katan(ConnectionListener):
 		self.Connect()
 
 	def drawBoard(self):
-		pass
-		#roll dice button
-		pygame.draw.rect(self.screen, LIGHTGRAY, (10, 100, 130, 40))
-		self.diceButton = pygame.Rect(10, 100, 130, 40)
-		myfont = pygame.font.SysFont(None, 35)
-		text = myfont.render('Roll Die', 1, WHITE)
-		self.screen.blit(text, [30, 110])
+			self.screen.fill(GRAY)
+			self.screen.blit(self.board, [69, 22])
+			for i in range(19):
+				self.screen.blit(self.images[self.catan.board[i].resource], [self.catan.pixelLoc[i+1][0]-self.radius, self.catan.pixelLoc[i+1][1]-self.radius*2/math.sqrt(3)])
+				self.screen.blit(self.tiles[self.catan.board[i].number], [self.catan.pixelLoc[i+1][0]-14, self.catan.pixelLoc[i+1][1]-14])
+			for i in range(19):
+				pygame.draw.polygon(self.screen, BROWN, coord_hexagon(self.radius, self.catan.pixelLoc[i+1]), 4)
+
+			self.hello = pygame.display.get_surface()
+			self.new = pygame.Surface((1000, 750))
+
+			pygame.draw.rect(self.screen, LIGHTGRAY, (10, 100, 130, 40))
+			self.diceButton = pygame.Rect(10, 100, 130, 40)
+			myfont = pygame.font.SysFont(None, 35)
+			text = myfont.render('Roll Die', 1, WHITE)
+			self.screen.blit(text, [30, 110])
 
 	def drawCards(self, player):
 		woolCard = pygame.image.load('wool.png').convert_alpha()
@@ -100,7 +100,7 @@ class Katan(ConnectionListener):
 		stoneCard = pygame.image.load('stone.png').convert_alpha()
 		wheatCard = pygame.image.load('wheat.png').convert_alpha()
 		cardImages = [woodCard, brickCard, woolCard, wheatCard, stoneCard]
-		cardBack = pygame.image.load('cardBack.png').convert_alpha()
+		#cardBack = pygame.image.load('cardBack.png').convert_alpha()
 		width, height = pygame.display.get_surface().get_size()
 		myfont = pygame.font.SysFont(None, 30)
 		y = 10
@@ -128,23 +128,26 @@ class Katan(ConnectionListener):
 		self.screen.blit(self.hello, [0, 0])
 		self.drawCards(self.catan.players[1])
 
+		#blit dice roll
+		myfont = pygame.font.SysFont(None, 40)
+		roll = myfont.render(str(self.catan.roll), 1, WHITE)
+		self.screen.blit(roll, [35, 155])
+
 		for event in pygame.event.get():
 			#quit if the quit button was pressed
 			if event.type == pygame.QUIT:
 				exit()
 			pos = pygame.mouse.get_pos()
-			if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+			if event.type == pygame.MOUSEBUTTONDOWN:
 				if self.diceButton.collidepoint(pos):
 					self.roll_die()
-					myfont = pygame.font.SysFont(None, 40)
-					roll = myfont.render(str(self.catan.roll), 1, WHITE)
 					self.screen.blit(roll, [35, 155])
 		#update the screen
 		pygame.display.flip()
 
 	def roll_die(self):
 		self.catan.roll = (random.randint(1, 6), random.randint(1, 6))
-		print str(self.catan.roll)
+
 
 letsgo = Katan()
 while 1:

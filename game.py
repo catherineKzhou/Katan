@@ -45,6 +45,11 @@ class game(object):
 					      DevCard.YEAR_OF_PLENTY, DevCard.YEAR_OF_PLENTY, DevCard.CHAPEL, DevCard.LIBRARY,
 					      DevCard.UNIVERSITY, DevCard.MARKET, DevCard.PALACE]
 		self.resources = {Resources.WOOD:19, Resources.BRICK:19, Resources.SHEEP:19, Resources.WHEAT: 19, Resources.STONE: 19}
+		self.tile_adj = {1:[2, 13, 12], 2:[1, 3, 13, 14], 3:[2, 14, 4], 4:[3, 14, 15, 5], 5:[4, 15, 6],
+                        6:[5, 15, 16, 7], 7:[6, 16, 8], 8:[7, 16, 17, 9], 9:[8, 17, 10], 10:[9, 17, 18, 11],
+                        11:[10, 18, 12], 12:[1, 11, 18, 13], 13:[1, 2, 12, 14, 18, 19], 14:[2, 3, 13, 4, 19, 15],
+                        15:[14, 4, 19, 5, 6, 16], 16:[15, 6, 8, 7, 19, 17], 17:[10, 16, 9, 8, 18, 19],
+						18:[12, 13, 11, 10, 17, 19], 19:[13, 14, 18, 15, 17, 16]}
 		random.shuffle(hex_numbers)
 		random.shuffle(hex_resources)
 		random.shuffle(self.ports)
