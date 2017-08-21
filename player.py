@@ -5,7 +5,7 @@ class Player(object):
 		self.name = name;
 		self.victory_points = 0
 		self.num_cards = 0
-		self.cards = {Resources.WOOD:7, Resources.BRICK:0, Resources.SHEEP:0, Resources.WHEAT:0, Resources.STONE:0}
+		self.cards = {Resources.WOOD:1, Resources.BRICK:1, Resources.SHEEP:1, Resources.WHEAT:1, Resources.STONE:1}
 		self.dev_cards = {DevCard.KNIGHT:0, DevCard.ROAD_BUILDING:0, DevCard.MONOPOLY:0, DevCard.YEAR_OF_PLENTY:0,
 						  DevCard.CHAPEL:0, DevCard.LIBRARY: 0, DevCard.UNIVERSITY: 0, DevCard.MARKET: 0, DevCard.PALACE: 0}
 		self.VP_dev_cards = 0
@@ -22,6 +22,14 @@ class Player(object):
 		self.num_cities = 0
 		self.num_settlements = 0
 		self.num_roads = 0
+
+		#trading/using resource cards
+		self.selected_cards = []
+		self.hand = {1: None, 2: None, 3: None, 4: None, 5: None, 6: None, 7: None}
+
+	def use_cards(self):
+		for s in self.selected_cards:
+			self.cards[s]  = self.cards[s] - 1
 
 	def get_cards(self, resource, amount):
 		self.cards[resource] += amount

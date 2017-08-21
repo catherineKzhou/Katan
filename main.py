@@ -89,9 +89,22 @@ class Katan(ConnectionListener):
 
 			pygame.draw.rect(self.screen, LIGHTGRAY, (10, 100, 130, 40))
 			self.diceButton = pygame.Rect(10, 100, 130, 40)
-			myfont = pygame.font.SysFont(None, 35)
-			text = myfont.render('Roll Die', 1, WHITE)
+			myfont_die = pygame.font.SysFont(None, 35)
+			text = myfont_die.render('Roll Die', 1, WHITE)
 			self.screen.blit(text, [30, 110])
+
+			pygame.draw.rect(self.screen, LIGHTGRAY, (765, 88, 130, 40))
+			self.buildButton = pygame.Rect(765, 88, 130, 40)
+			myfont_build = pygame.font.SysFont(None, 35)
+			text = myfont_build.render('Build', 1, WHITE)
+			self.screen.blit(text, [800, 96])
+
+			pygame.draw.rect(self.screen, LIGHTGRAY, (765, 30, 130, 40))
+			self.tradeButton = pygame.Rect(765, 50, 130, 40)
+			myfont_trade = pygame.font.SysFont(None, 35)
+			text = myfont_trade.render('Trade', 1, WHITE)
+			self.screen.blit(text, [800, 38])
+
 
 	def drawCards(self, player):
 		woolCard = pygame.image.load('wool.png').convert_alpha()
@@ -110,11 +123,35 @@ class Katan(ConnectionListener):
 				self.screen.blit(label, [10, y])
 				y += 25
 
+		"""
+		y = 10
+		for x in range(7):
+			pygame.draw.rect(self.screen, LIGHTGRAY, (width - 77, y, 61, 97))
+			y += 95
+		"""
+
+		self.card_coord = [pygame.Rect(width - 77, 10, 61, 97), pygame.Rect(width - 77, 105, 61, 97), pygame.Rect(width - 77, 200, 61, 97),
+						   pygame.Rect(width - 77, 295, 61, 97), pygame.Rect(width - 77, 390, 61, 97), pygame.Rect(width - 77, 485, 61, 97),
+						   pygame.Rect(width - 77, 580, 61, 97)]
+
+		y = 10
+		hand_number = 0
 		for r in player.cards:
 			image = cardImages[r-1]
 			for n in range(player.cards[r]):
-				self.screen.blit(image, [width - 75, 20])
-				width -= 30
+				self.screen.blit(image, [width - 75, y])
+				player.hand[hand_number] = r
+				hand_number += 1
+				y += 95
+
+	def select_card(self, player, num):
+		pygame.draw.rect(self.screen, WHITE, self.card_coord[num])
+		player.selected_cards.append(player.hand[num])
+
+	def build_city(self, pos):
+		blue_city = pygame.image.load('bluecity'.png').convert_alpha()
+		self.cities.append(pos)
+		self.screen.blit()
 
 	def update(self):
 		#sleep to make the game 60 fps
@@ -128,6 +165,8 @@ class Katan(ConnectionListener):
 		self.screen.blit(self.hello, [0, 0])
 		self.drawCards(self.catan.players[1])
 
+		#print(self.catan.players[1].selected_cards)
+
 		#blit dice roll
 		myfont = pygame.font.SysFont(None, 40)
 		roll = myfont.render(str(self.catan.roll), 1, WHITE)
@@ -138,10 +177,19 @@ class Katan(ConnectionListener):
 			if event.type == pygame.QUIT:
 				exit()
 			pos = pygame.mouse.get_pos()
-			if event.type == pygame.MOUSEBUTTONDOWN:
+			if event.type == pygame.mouse.get_pressed()[0]:
+				#roll dice
 				if self.diceButton.collidepoint(pos):
 					self.roll_die()
 					self.screen.blit(roll, [35, 155])
+				#select cards for trading or building
+				for coord in range(7):
+					if self.card_coord[coord].collidepoint(pos):
+						self.select_card(self.catan.players[1], coord)
+			if event.type == pygame.mouse.get_pressed()[1]:
+				self.build_city()
+
+
 		#update the screen
 		pygame.display.flip()
 

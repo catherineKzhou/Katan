@@ -68,6 +68,8 @@ class game(object):
 		for x in range (num_players):
 			self.players.append(Player(names[x]))
 
+		self.turn = 0
+
 		self.buildings = []
 		for x in range (54):
 			self.buildings.append(building(0, Structures.NONE))
